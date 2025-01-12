@@ -91,3 +91,4 @@ class GroqService {
 }
 
 module.exports = GroqService;
+module.exports = new GroqService();
