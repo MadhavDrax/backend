@@ -9,6 +9,7 @@ const sessionSchema = new mongoose.Schema({
   chatHistory: [{
     message: String,
     response: String,
+    side: String,
     timestamp: { type: Date, default: Date.now }
   }],
   createdAt: {

@@ -13,6 +13,7 @@ const validators = require('./src/utils/validators');
 const speechRoutes = require('./src/routes/speech');
 const chatRoutes = require('./src/routes/chat');
 const healthRoutes = require('./src/routes/health');
+const userRoutes = require('./src/routes/userRoutes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(limiter);
 app.use('/api/speech', speechRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/', userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
