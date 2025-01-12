@@ -63,7 +63,7 @@ class GroqService {
           max_tokens: 500
         });
   
-        return response.data.choices[0].message.content;
+        return response.data.choices[0].message;
       } catch (error) {
         console.error('Groq API error:', error.response?.data || error.message);
         throw new Error('Failed to generate health response');
