@@ -58,7 +58,7 @@ app.all('*', (req, res, next) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT,async  () => {
    await mongoose.connect(process.env.MONGODB_URI)
-  logger.info(`Server running on port ${PORT}`);
+  logger.info(`Server running on port http://localhost:${PORT}`);
 });
 
 // Handle unhandled promise rejections
