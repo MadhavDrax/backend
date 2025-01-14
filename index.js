@@ -49,7 +49,9 @@ app.use((err, req, res, next) => {
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
-
+app.get('/', (req, res) => {
+  res.send('Welcome to the homepage!');
+});
 // Handle unhandled routes
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
