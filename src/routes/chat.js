@@ -89,10 +89,40 @@ router.post('/message', async (req, res, next) => {
     }
 
     const response = await groqService.generateHealthResponse(message);
-    
+    // for debug api response
+    // console.log('API Response being sent:', {
+    //   success: true,
+    //   response: response,
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: message,
+    //       timestamp: new Date().toISOString()
+    //     },
+    //     {
+    //       role: "assistant",
+    //       content: response,
+    //       timestamp: new Date().toISOString()
+    //     }
+    //   ]
+    // });
     res.json({ 
       success: true,
+      // add this just to resolve the error in socket (for nodejs to acces message)
       response,
+      // response,
+      messages: [
+        {
+          role: "user",
+          content: message,
+          timestamp: new Date().toISOString()
+        },
+        {
+          role: "bot",
+          content: response,
+          timestamp: new Date().toISOString()
+        }
+      ],
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -115,16 +145,35 @@ router.post('/message', async (req, res, next) => {
     next(error);
   }
 });
-router.get('/history/:sessionId', async (req, res, next) => {
+// router.get('/history/:sessionId', async (req, res, next) => {
+//   try {
+//     const session = await Session.findOne({ sessionId: req.params.sessionId });
+//     if (!session) {
+//       throw new AppError('Session not found', 404);
+//     }
+//     res.json(session.chatHistory);
+//   } catch (error) {
+//     logger.error('Chat history error:', error);
+//     next(error);
+//   }
+// });
+router.get('/history/:userId', async (req, res) => {
   try {
-    const session = await Session.findOne({ sessionId: req.params.sessionId });
-    if (!session) {
-      throw new AppError('Session not found', 404);
-    }
-    res.json(session.chatHistory);
+    const { userId } = req.params;
+    const messages = await Message.find({ userId })
+      .sort({ timestamp: 1 })
+      .lean();
+    
+    res.json({
+      success: true,
+      messages
+    });
   } catch (error) {
-    logger.error('Chat history error:', error);
-    next(error);
+    logger.error('Error fetching chat history:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch chat history'
+    });
   }
 });
 
