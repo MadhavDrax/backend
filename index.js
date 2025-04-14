@@ -55,6 +55,18 @@ const apiClient = axios.create({
 // Create HTTP server and attach Socket.IO
 const server = http.createServer(app);
 const io = new Server(server);
+// io.on('connection', (socket) => {
+//   console.log('a user connected', socket.id);
+// });
+// const io = new Server(server, {
+//   cors: {
+//     origin: '*', // Adjust this to match your frontend's origin
+//     methods: ['GET', 'POST'],
+//   },
+// });
+
+// // Create a WebSocket server
+// const wss = new WebSocket.Server({ server });
 
 // Create a single instance of GroqService
 const groqService = new GroqService();
@@ -82,10 +94,37 @@ io.on('connection', (socket) => {
       }
 
       // Use GroqService to get AI response
+      // const response = await groqService.generateHealthResponse(message);
+
+      //using api route insted to direct use of groq service
+      // Call your API route instead of using Groq service directly
+      // console.log('Making API request with message:', message); // Debug log
+
       // Make API request
       const response = await apiClient.post('/api/chat/message', { message });
       
-
+      // const response = await axios.post('/api/chat/message', message);
+      // console.log('API Response:', response.data); // Debug log
+// Extract the content from the response and emit a simplified structure
+      // const assistantMessage = response.data.response[0]?.content || '';
+      // Send API response back to the client
+      // socket.emit('receive_message', response.data);
+      // Send response back to the client
+      // socket.emit('receive_message', {
+      //   success: true,
+      //   messages: [
+      //     {
+      //       role: "user",
+      //       content: message,
+      //       timestamp: new Date().toISOString()
+      //     },
+      //     {
+      //       role: "assistant",
+      //       content: response
+      //     }
+      //   ],
+      //   timestamp: new Date().toISOString(),
+      // });
       socket.emit('receive_message', response.data);
     } catch (error) {
       logger.error('WebSocket error:', error.message);
@@ -119,6 +158,55 @@ io.on('connection', (socket) => {
       }
     }
   });
+
+  // creating new socket.io code for message handeling purposes
+  // Handle receiving a message from the client
+  // socket.on('send_message', async (data) => {
+  //   try {
+
+  //     const { message, userId } = data;
+  //     console.log('Body:', data);
+  //     console.log('Send message:', message);
+  //     console.log('userID', userId);
+
+  //     if (!message || !userId) {
+  //       return socket.emit('receive_message', {
+  //         success: false,
+  //         error: 'Message and userId are required',
+  //       });
+  //     }
+
+  //     // Save user message
+  //     await Message.create({
+  //       userId,
+  //       content: message,
+  //       sender: 'user'
+  //     });
+
+  //     // Get AI response
+  //     const response = await groqService.generateHealthResponse(message);
+
+  //     // Save bot response
+  //     await Message.create({
+  //       userId,
+  //       content: response,
+  //       sender: 'bot'
+  //     });
+
+  //     // Send response back to the client
+  //     socket.emit('receive_message', {
+  //       success: true,
+  //       response,
+  //       timestamp: new Date().toISOString(),
+  //     });
+  //   } catch (error) {
+  //     logger.error('WebSocket error:', error.message);
+  //     socket.emit('receive_message', {
+  //       success: false,
+  //       error: 'Failed to process message',
+  //     });
+  //   }
+  // });
 
   // Handle client disconnection
   socket.on('disconnect', () => {

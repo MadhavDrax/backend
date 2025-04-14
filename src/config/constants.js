@@ -18,7 +18,7 @@ const constants = {
     ],
   
     MODELS: {
-      GROQ: 'mixtral-8x7b-32768'
+      GROQ: 'llama-3.3-70b-versatile'
     },
   
     API_TIMEOUT: 30000 // 30 seconds
