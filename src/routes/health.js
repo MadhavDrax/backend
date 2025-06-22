@@ -21,6 +21,7 @@ router.get('/tips', async (req, res, next) => {
 
     if (!tips.length) {
       // Generate new tip if none exists
+      // const newTip = await groqService.generateHealthTip("fitness");
       const newTip = await groqService.generateHealthTip(category);
       const healthTip = await HealthTip.create({
         category: category || 'general',
