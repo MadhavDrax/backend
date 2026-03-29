@@ -11,7 +11,7 @@ const limiter = require('./src/utils/rateLimit');
 const logger = require('./src/utils/logger');
 const AppError = require('./src/utils/errors');
 const validators = require('./src/utils/validators');
-const GroqService = require('./src/services/groq');
+const groqService = require('./src/services/groq');
 const { Server } = require('socket.io');
 const path = require('path');
 
@@ -28,9 +28,10 @@ connectDB();
 
 // Middleware
 const corsOptions = {
-  origin: 'https://healthbuddy-x0enff.flutterflow.app', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+  origin: ['https://healthbuddy-x0enff.flutterflow.app', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -68,8 +69,7 @@ const io = new Server(server);
 // // Create a WebSocket server
 // const wss = new WebSocket.Server({ server });
 
-// Create a single instance of GroqService
-const groqService = new GroqService();
+// Use groqService singleton
 
 // Handle WebSocket connections
 io.on('connection', (socket) => {
