@@ -5,11 +5,9 @@
 
 const express = require('express');
 const router = express.Router();
-const GroqService = require('../services/groq');
+const groqService = require('../services/groq');
 const logger = require('../utils/logger');
 const { AppError } = require('../utils/errors');
-
-const groqService = new GroqService();
 
 router.post('/message', async (req, res, next) => {
   try {
